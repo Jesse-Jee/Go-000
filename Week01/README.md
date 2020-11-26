@@ -240,7 +240,7 @@ api-interface 可以称为是BFF，是一种适配服务。将后端微服务进
 CAP原则指的是三个原则最多同时实现两点，三者不可兼顾。        
 
 阿里的一个开源服务发现中心。
-![nacos](https://nacos.io/zh-cn/docs/what-is-nacos.html)
+[nacos](https://nacos.io/zh-cn/docs/what-is-nacos.html)
 
 # 多集群
 ## 为什么要做多集群
