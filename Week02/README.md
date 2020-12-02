@@ -3,16 +3,17 @@
 **目录**
             
 - [Error](#Error)         
-    - [Error Type](##Error Type)
-        - [sentinel error](###sentinel error)
-        - [Error types](###Error types)
-        - [Opaque error](###Opaque error)
-    - [handing error](##handing error)
-    - [Wrap error](##Wrap error)
-        - [wrap error使用场景](###wrap error使用场景)
+    - [Error Type](##ErrorType)
+        - [sentinel error](###sentinelError)
+        - [Error types](###ErrorTypes)
+        - [Opaque error](###OpaqueError)
+    - [handing error](##handingError)
+    - [Wrap error](##WrapError)
+        - [wrap error使用场景](###wrapError使用场景)
     - [1.13后的error](##1.13后的error)
-    - [Go 2版本Error处理](##Go 2版本Error处理)
+    - [Go 2版本Error处理](##Go2版本Error处理)
 - [总结](#总结)
+- [作业](#作业)
 
 
 # Error
@@ -30,7 +31,7 @@ panic只有在不可恢复的情况下，才会使用。
 - error are values
 
 ## ErrorType
-### sentinel error 
+### sentinelError 
 预定义错误                                   
 即，使用特定的值来表示error     
 
@@ -50,7 +51,7 @@ if err == ErrSomething{...}
 结论：             
 尽量少使用。              
 
-### Error types
+### ErrorTypes
 定义一个实现了error接口的自定义型，携带自己想要的信息。如：                    
 ```go
 type MyError struct {
@@ -70,7 +71,7 @@ func test() error {
 调用者可以用断言判断这个类型来使用。
 
 
-### Opaque error
+### OpaqueError
 
 **不透明error处理**
               
@@ -85,12 +86,12 @@ type temporary interface {
 }
 ```
 
-## handing error
+## handingError
 - 判断不等于比判断等于要美观的多。 把异常的先抛出去。                         
 - 消除不必要error判断。
 
 
-## Wrap error
+## WrapError
 没有上下文的错误，抛到最上层后，无法知道最终是哪报出来的错。需要把堆栈信息也携带者打印出来，就能定位到。                
 
 你只应该处理error一次。避免同一个错误，一层层处处打日志。
@@ -141,7 +142,7 @@ error 被封到withmessage中，withmessage被封到withstack中，最后使用w
 
 通过使用pkg/errors包，可以为错误值添加上下文。
 
-### wrap error使用场景                
+### wrapError使用场景                
 - 应用代码中，使用errors.New 或 errors.Errorf返回错误。                   
 - 如果调用项目的其他包内的函数，通常简单直接返回。                 
 - 如果和其他库协作，考虑使用errors.wrap， errors.wrapf保存堆栈信息。
@@ -165,7 +166,7 @@ error 被封到withmessage中，withmessage被封到withstack中，最后使用w
 
 可以还用%w向err添加附加信息。                   
 
-## Go 2版本Error处理
+## Go2版本Error处理
 [Go 2 Error前瞻](https://go.googlesource.com/proposal/+/master/design/29934-error-values.md)
 
 
