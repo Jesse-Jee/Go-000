@@ -170,8 +170,7 @@ error 被封到withmessage中，withmessage被封到withstack中，最后使用w
 [Go 2 Error前瞻](https://go.googlesource.com/proposal/+/master/design/29934-error-values.md)
 
 
-# 总结
-错误的处理要基于自身业务。            
+# 总结            
 避免处处留日志的情况，Wrap error是非常好的一种方式。         
 一定要将 error只处理一次牢记于心。            
 
@@ -182,12 +181,27 @@ error 被封到withmessage中，withmessage被封到withstack中，最后使用w
 # 作业
 作业：我们在数据库操作的时候，比如 dao 层中当遇到一个 sql.ErrNoRows 的时候，是否应该 Wrap 这个 error，抛给上层。为什么，应该怎么做请写出代码？
 
-在dao层遇到sql.ErrNoRows时，如果上层是在意这个结果的，那么使用errors.Wrap()向上层抛。记录最原始的堆栈信息加上附加的信息，抛上去。
-遵循错误只处理一次的原则，上层拿到后向上抛不再处理。
+dao: 
 
-如果上层不在意查到的结果，就是一个纯query，上层也没有基于这个结果做操作的意图。              
-比如我就想知道有没有这么个值，有的话它的值是什么我不在意，没有就告诉我没有好了。那么就在dao层吞下这颗苦果，返回空结果给上层。
+ return errors.Wrapf(code.NotFound, fmt.Sprintf("sql: %s error: %v", sql, err))
 
+
+biz:
+
+if errors.Is(err, code.NotFound} {
+
+}
+
+
+// 助教注解：
+dao层作为被调用者，不能去假设调用者的意图。         
+在业务层面，ErrNoRows和其他错误是不同的，dao层应该提供区分它们的能力。同时也不要把ErrNoRows直接或warp后抛出。                     
+
+
+// 何小亮同学的答案（得到助教肯定的答案）：           
+DAO 报sql.ErrNoRows时，return 一个预定义在dao层里的sentinel err fmt.Errorf("%w") 携带具体信息并wrap后抛出。
+DAO 报其他错误时，Wrap错误后抛给上层
+service 层调用dao报错时直接返回错误给上层 service 层如果需要对未找到记录的err做特殊处理则通过errors.Is判断后处理，并吞掉这个错误 api 层里打印并处理错误
 
 
 
